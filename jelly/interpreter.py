@@ -17,6 +17,12 @@ inf = float('inf')
 nan = float('nan')
 sys.setrecursionlimit(1 << 30)
 
+def _gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+math.gcd = _gcd
+
 def arities(links):
 	return [link.arity for link in links]
 
@@ -216,7 +222,8 @@ def enumerate_md(array, upper_level = []):
 		if type(item) != list:
 			yield [upper_level + [i + 1], item]
 		else:
-			yield from enumerate_md(item, upper_level + [i + 1])
+			for en in enumerate_md(item, upper_level + [i + 1]):
+				yield en
 
 def equal(array):
 	array = iterable(array)
@@ -1301,7 +1308,8 @@ def windowed_sublists(array):
 	return [sublist for width in range(1, len(array) + 1) for sublist in split_rolling(array, width)]
 
 def output(argument, end = '', transform = stringify):
-	if locale.getdefaultlocale()[1][0:3] == 'UTF':
+	#if locale.getdefaultlocale()[1][0:3] == 'UTF':
+	if True:
 		print(transform(argument), end = end)
 	else:
 		print(unicode_to_jelly(transform(argument)), end = unicode_to_jelly(end))
